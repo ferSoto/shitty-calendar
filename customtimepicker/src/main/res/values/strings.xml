@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Custom Time Picker</string>
+    <string name="button_accept">Aceptar</string>
+    <string name="button_cancel">Cancelar</string>
+
+    <!-- For creating layout -->
+    <string name="example_year">2018</string>
+    <string name="example_date">Mar. 29 May.</string>
+    <string name="example_month_year">Mayo de 2018</string>
+</resources>
