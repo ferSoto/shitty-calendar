@@ -5,9 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import java.util.*
-
-import com.example.customtimepicker.DateExtensions.Companion.calendar
-import java.time.Month
+import com.example.customtimepicker.extensions.*
 import kotlin.collections.ArrayList
 
 class CalendarAdapter(
@@ -39,18 +37,7 @@ class CalendarAdapter(
             selectedDate = dateList[position]
             notifyDataSetChanged()
         }
-
         return view
-    }
-
-    fun updateMonth(dateList: ArrayList<Date>) {
-        this.dateList = dateList
-        notifyDataSetChanged()
-    }
-
-    fun setSelectedDate(date: Date, daysOfMonth: ArrayList<Date>) {
-        selectedDate = date
-        updateMonth(daysOfMonth)
     }
 
     override fun getItem(position: Int) = position
@@ -64,13 +51,23 @@ class CalendarAdapter(
         listener.onSelectedDate(selectedDate)
     }
 
+    fun setSelectedDate(date: Date, daysOfMonth: ArrayList<Date>) {
+        selectedDate = date
+        updateMonth(daysOfMonth)
+    }
+
+    fun updateMonth(dateList: ArrayList<Date>) {
+        this.dateList = dateList
+        notifyDataSetChanged()
+    }
+
 
     // Extensions
 
     private val Date.dayOfMonth : Int
         get() {
             val calendar = this.calendar
-            return calendar.get(Calendar.DAY_OF_MONTH)
+            return calendar.dayOfMonth
         }
 
     private fun Date.isSameDay(other: Date) : Boolean {
@@ -78,7 +75,6 @@ class CalendarAdapter(
         val thisCalendar = this.calendar
         val otherCalendar = other.calendar
 
-        return (thisCalendar.get(Calendar.DAY_OF_YEAR) == otherCalendar.get(Calendar.DAY_OF_YEAR)
-                && thisCalendar.get(Calendar.YEAR) == otherCalendar.get(Calendar.YEAR))
+        return (thisCalendar.dayOfYear == otherCalendar.dayOfYear && thisCalendar.year == otherCalendar.year)
     }
 }

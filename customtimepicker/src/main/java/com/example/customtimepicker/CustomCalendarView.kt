@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.*
 import java.util.*
 import kotlin.collections.ArrayList
+import com.example.customtimepicker.extensions.*
 
 class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     interface Listener {
@@ -26,7 +27,6 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     private var listener: Listener? = null
 
     init {
-
         inflateView()
         setupButtons()
 
@@ -78,7 +78,7 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
 
         val days = ArrayList<Date>()
         for (i in 0 until 42) {
-            if (month < calendar.get(Calendar.MONTH) && year <= calendar.get(Calendar.YEAR) && i.rem(7) == 0) {
+            if (month < calendar.month && year <= calendar.year && i.rem(7) == 0) {
                 // Minimum days needed to fill calendar.
                 // Corner case:
                 // When January is going to be displayed and it doesn't start in sunday
@@ -87,27 +87,26 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
             }
 
             days.add(calendar.time)
-            val dayOfYear = calendar.get(Calendar.DAY_OF_YEAR)
-            calendar.set(Calendar.DAY_OF_YEAR, dayOfYear + 1)
+            calendar.dayOfYear += 1
         }
         return days
     }
 
     private fun getCalendar(month: Int, year: Int) : Calendar {
-        with(Calendar.getInstance()) {
-            set(Calendar.YEAR, year)
-            set(Calendar.MONTH, month)
-            set(Calendar.WEEK_OF_MONTH, 1)
-            set(Calendar.DAY_OF_WEEK, 1)
-            return this
+        Calendar.getInstance().let {
+            it.year = year
+            it.month = month
+            it.weekOfMonth = 1
+            it.dayOfWeek = 1
+            return it
         }
     }
 
     private fun updateDisplayedMonthAndYear() {
         // Set calendar at first day of month to prevent skipping months with less than 31 days
         val calendar = Calendar.getInstance()
-        calendar.set(Calendar.MONTH, month)
-        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        calendar.month = month
+        calendar.dayOfMonth = 1
         val monthName = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale("es", "MX"))
         val text = "${monthName.capitalize()} de $year"
         monthAndYearTxt.text = text

@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.*
 import java.util.*
-import com.example.customtimepicker.DateExtensions.Companion.calendar
+import com.example.customtimepicker.extensions.calendar
 
 class CustomTimePicker : FrameLayout, CustomCalendarView.Listener {
     private lateinit var currentDateLayout: RelativeLayout
