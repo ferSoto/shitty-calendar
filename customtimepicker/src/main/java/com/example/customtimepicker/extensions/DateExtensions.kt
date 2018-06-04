@@ -8,3 +8,12 @@ val Date.calendar : Calendar
         calendar.time = this
         return calendar
     }
+
+val Date.dayOfWeek : Int
+    get() = calendar.dayOfWeek
+
+val Date.isWeekend : Boolean
+    get() {
+        val day = dayOfWeek
+        return (day == Calendar.SATURDAY || day == Calendar.SUNDAY)
+    }

@@ -39,10 +39,32 @@ class CustomTimePicker : FrameLayout, CustomCalendarView.Listener {
         acceptButton.setTextColor(color)
     }
 
+    var selectedDate : Date
+        get() = calendarView.selectedDate
+        set(date) {
+        calendarView.selectedDate = date
+    }
+
+    fun setWeekendsEnabled(enabled: Boolean) {
+
+    }
+
+    fun onAcceptClick(listener: (Date) -> Unit) {
+        acceptButton.setOnClickListener {
+            listener(calendarView.selectedDate)
+        }
+    }
+
+    fun onCancelClick(listener: () -> Unit) {
+        cancelButton.setOnClickListener {
+            listener()
+        }
+    }
+
 
     // CustomCalendarView.Listener
 
-    override fun onSelectedDate(date: Date) {
+    override fun onSelectDate(date: Date) {
         currentDateTxt.text = date.formatted
     }
 

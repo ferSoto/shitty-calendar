@@ -15,8 +15,12 @@ class CalendarAdapter(
         private var selectedDate: Date = today,
         private var listener: Listener) : BaseAdapter() {
 
+    private var weekendsEnabled = true
+    private var minDate: Date? = null
+    private var maxDate: Date? = null
+
     interface Listener {
-        fun onSelectedDate(date: Date)
+        fun onSelectDate(date: Date)
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -26,7 +30,8 @@ class CalendarAdapter(
             when {
                 it.isSameDay(selectedDate) -> view.setSelected()
                 it.isSameDay(today) -> view.setAsToday()
-                it.before(today) -> view.setDisabled()
+                !weekendsEnabled && it.isWeekend -> view.setDisabled()
+                it.outOfBounds -> view.setDisabled()
                 else -> view.setIDLE()
             }
             view.setDayOfMonth(it.dayOfMonth)
@@ -46,11 +51,6 @@ class CalendarAdapter(
 
     override fun getCount() = dateList.size
 
-    override fun notifyDataSetChanged() {
-        super.notifyDataSetChanged()
-        listener.onSelectedDate(selectedDate)
-    }
-
     fun setSelectedDate(date: Date, daysOfMonth: ArrayList<Date>) {
         selectedDate = date
         updateMonth(daysOfMonth)
@@ -60,6 +60,30 @@ class CalendarAdapter(
         this.dateList = dateList
         notifyDataSetChanged()
     }
+
+    fun setDateBounds(minDate: Date? = this.minDate, maxDate: Date? = this.maxDate) {
+        this.minDate = minDate
+        this.maxDate = maxDate
+        notifyDataSetChanged()
+    }
+
+    fun setWeekendsEnabled(enabled: Boolean) {
+        weekendsEnabled = enabled
+        notifyDataSetChanged()
+    }
+
+    override fun notifyDataSetChanged() {
+        super.notifyDataSetChanged()
+        listener.onSelectDate(selectedDate)
+    }
+
+    private val Date.outOfBounds : Boolean
+        get() {
+            var isOut = false
+            isOut = isOut || minDate?.after(this) ?: false
+            isOut = isOut || maxDate?.before(this) ?: false
+            return isOut
+        }
 
 
     // Extensions

@@ -10,7 +10,7 @@ import com.example.customtimepicker.extensions.*
 
 class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     interface Listener {
-        fun onSelectedDate(date: Date)
+        fun onSelectDate(date: Date)
     }
 
     private lateinit var gridView: GridView
@@ -21,7 +21,6 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     private var today: Date
     private var month: Int
     private var year: Int
-    private var selectedDate: Date
 
     private val adapter: CalendarAdapter
     private var listener: Listener? = null
@@ -112,16 +111,26 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
         monthAndYearTxt.text = text
     }
 
+    var selectedDate : Date
+        set(date) {
+            // Set Selected date, update displayed month and notify change
+            field = date
+            val calendar = date.calendar
+            adapter.setSelectedDate(date, getDatesOfMonth(calendar.month, calendar.year))
+            listener?.onSelectDate(selectedDate)
+        }
+
+
     fun setListener(listener: Listener) {
         this.listener = listener
-        listener.onSelectedDate(selectedDate)
+        listener.onSelectDate(selectedDate)
     }
 
 
     // CalendarAdapter.Listener
 
-    override fun onSelectedDate(date: Date) {
-        listener?.onSelectedDate(date)
+    override fun onSelectDate(date: Date) {
+        listener?.onSelectDate(date)
     }
 
 
