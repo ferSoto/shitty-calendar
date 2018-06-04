@@ -120,6 +120,15 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
             listener?.onSelectDate(selectedDate)
         }
 
+    var areWeekendsEnabled : Boolean
+        get() = adapter.areWeekendsEnabled
+        set(enabled) {
+            adapter.areWeekendsEnabled = enabled
+        }
+
+    fun setDateBounds(minDate: Date? = null, maxDate: Date? = null) {
+        adapter.setDateBounds(minDate, maxDate)
+    }
 
     fun setListener(listener: Listener) {
         this.listener = listener

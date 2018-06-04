@@ -45,8 +45,14 @@ class CustomTimePicker : FrameLayout, CustomCalendarView.Listener {
         calendarView.selectedDate = date
     }
 
-    fun setWeekendsEnabled(enabled: Boolean) {
+    var areWeekendsEnabled : Boolean
+        get() = calendarView.areWeekendsEnabled
+        set(enabled) {
+            calendarView.areWeekendsEnabled = enabled
+        }
 
+    fun setDateBounds(minDate: Date? = null, maxDate: Date? = null) {
+        calendarView.setDateBounds(minDate, maxDate)
     }
 
     fun onAcceptClick(listener: (Date) -> Unit) {

@@ -15,7 +15,6 @@ class CalendarAdapter(
         private var selectedDate: Date = today,
         private var listener: Listener) : BaseAdapter() {
 
-    private var weekendsEnabled = true
     private var minDate: Date? = null
     private var maxDate: Date? = null
 
@@ -30,7 +29,7 @@ class CalendarAdapter(
             when {
                 it.isSameDay(selectedDate) -> view.setSelected()
                 it.isSameDay(today) -> view.setAsToday()
-                !weekendsEnabled && it.isWeekend -> view.setDisabled()
+                !areWeekendsEnabled && it.isWeekend -> view.setDisabled()
                 it.outOfBounds -> view.setDisabled()
                 else -> view.setIDLE()
             }
@@ -61,14 +60,15 @@ class CalendarAdapter(
         notifyDataSetChanged()
     }
 
+    var areWeekendsEnabled : Boolean = true
+        set(enabled) {
+            field = enabled
+            notifyDataSetChanged()
+        }
+
     fun setDateBounds(minDate: Date? = this.minDate, maxDate: Date? = this.maxDate) {
         this.minDate = minDate
         this.maxDate = maxDate
-        notifyDataSetChanged()
-    }
-
-    fun setWeekendsEnabled(enabled: Boolean) {
-        weekendsEnabled = enabled
         notifyDataSetChanged()
     }
 
