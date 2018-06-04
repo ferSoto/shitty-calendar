@@ -33,12 +33,6 @@ class CustomTimePicker : FrameLayout, CustomCalendarView.Listener {
         acceptButton = findViewById(R.id.accept_button)
     }
 
-    fun changeColor(color: Int) {
-        currentDateLayout.background = ColorDrawable(color)
-        cancelButton.setTextColor(color)
-        acceptButton.setTextColor(color)
-    }
-
     var selectedDate : Date
         get() = calendarView.selectedDate
         set(date) {
@@ -54,6 +48,15 @@ class CustomTimePicker : FrameLayout, CustomCalendarView.Listener {
     fun setDateBounds(minDate: Date? = null, maxDate: Date? = null) {
         calendarView.setDateBounds(minDate, maxDate)
     }
+    
+    var layoutColor : Int = R.color.colorAccent
+        set(color) {
+            field = color
+            calendarView.selectedColor = color
+            currentDateLayout.background = ColorDrawable(color)
+            cancelButton.setTextColor(color)
+            acceptButton.setTextColor(color)
+        }
 
     fun onAcceptClick(listener: (Date) -> Unit) {
         acceptButton.setOnClickListener {

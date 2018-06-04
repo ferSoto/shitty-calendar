@@ -3,6 +3,7 @@ package com.example.customtimepicker
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -22,6 +23,9 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     private var month: Int
     private var year: Int
 
+    private var minDate: Date? = null
+    private var maxDate: Date? = null
+
     private val adapter: CalendarAdapter
     private var listener: Listener? = null
 
@@ -31,12 +35,12 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
 
         val calendar = Calendar.getInstance()
         today = calendar.time
-        selectedDate = today
         month = calendar.get(Calendar.MONTH)
         year = calendar.get(Calendar.YEAR)
 
-        adapter = CalendarAdapter(context, getDatesOfMonth(month, year), today, listener = this)
+        adapter = CalendarAdapter(context, getDatesOfMonth(month, year), today, this)
         gridView.adapter = adapter
+        selectedDate = today
     }
 
     private fun inflateView() {
@@ -49,26 +53,34 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     }
 
     private fun setupButtons() {
+        fun updateUI() {
+            adapter.updateMonth(getDatesOfMonth(month, year))
+            updateDisplayedMonthAndYear()
+            updateNavigationButtons()
+        }
+
         pastMonth.setOnClickListener {
+            // Do not take taps if button isn't visible
+            if (it.visibility != View.VISIBLE) return@setOnClickListener
             month = if (month - 1 < 0) {
                 year -= 1
                 11
             } else {
                 month - 1
             }
-            adapter.updateMonth(getDatesOfMonth(month, year))
-            updateDisplayedMonthAndYear()
+            updateUI()
         }
 
         nextMonth.setOnClickListener {
+            // Do not take taps if button isn't visible
+            if (it.visibility != View.VISIBLE) return@setOnClickListener
             month = if (month + 1 >= 12) {
                 year += 1
                 0
             } else {
                 month + 1
             }
-            adapter.updateMonth(getDatesOfMonth(month, year))
-            updateDisplayedMonthAndYear()
+            updateUI()
         }
     }
 
@@ -111,6 +123,20 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
         monthAndYearTxt.text = text
     }
 
+    private fun updateNavigationButtons() {
+        if (minDate != null && minDate!!.isCurrentMonth) {
+            pastMonth.visibility = View.INVISIBLE
+        } else {
+            pastMonth.visibility = View.VISIBLE
+        }
+
+        if (maxDate != null && maxDate!!.isCurrentMonth) {
+            nextMonth.visibility = View.INVISIBLE
+        } else {
+            nextMonth.visibility = View.VISIBLE
+        }
+    }
+
     var selectedDate : Date
         set(date) {
             // Set Selected date, update displayed month and notify change
@@ -127,8 +153,17 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
         }
 
     fun setDateBounds(minDate: Date? = null, maxDate: Date? = null) {
+        this.minDate = minDate
+        this.maxDate = maxDate
+        updateNavigationButtons()
         adapter.setDateBounds(minDate, maxDate)
     }
+
+    var selectedColor : Int = R.color.colorAccent
+        set(color) {
+            field = color
+            adapter.selectedColor = color
+        }
 
     fun setListener(listener: Listener) {
         this.listener = listener
@@ -141,6 +176,19 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     override fun onSelectDate(date: Date) {
         listener?.onSelectDate(date)
     }
+
+
+    // Extensions
+
+    private val Date.isCurrentMonth : Boolean
+        get() {
+            val calendar = this.calendar
+            val thisMonth = calendar.month
+            val thisYear = calendar.year
+            with(this@CustomCalendarView) {
+                return (month == thisMonth && year == thisYear)
+            }
+        }
 
 
     // Constructors (All empty)

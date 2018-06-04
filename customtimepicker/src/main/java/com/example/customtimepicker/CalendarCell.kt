@@ -15,7 +15,7 @@ class CalendarCell : LinearLayout {
 
     private var state = State.IDLE
     private var dateTxt: TextView
-    private var selectedColor = Color.BLUE
+    var selectedColor = R.color.colorAccent
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -25,10 +25,6 @@ class CalendarCell : LinearLayout {
 
     fun setDayOfMonth(dayOfMonth: Int) {
         dateTxt.text = dayOfMonth.toString()
-    }
-
-    fun setSelectedColor(color: Int) {
-        selectedColor = color
     }
 
     fun setIDLE() {

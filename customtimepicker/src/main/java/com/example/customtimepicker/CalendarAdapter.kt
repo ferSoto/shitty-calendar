@@ -12,9 +12,9 @@ class CalendarAdapter(
         private val context: Context,
         private var dateList: ArrayList<Date>,
         private var today: Date,
-        private var selectedDate: Date = today,
         private var listener: Listener) : BaseAdapter() {
 
+    private var selectedDate = today
     private var minDate: Date? = null
     private var maxDate: Date? = null
 
@@ -24,6 +24,7 @@ class CalendarAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view = (convertView ?: CalendarCell(context)) as CalendarCell
+        view.selectedColor = selectedColor
 
         dateList[position].let {
             when {
@@ -71,6 +72,12 @@ class CalendarAdapter(
         this.maxDate = maxDate
         notifyDataSetChanged()
     }
+
+    var selectedColor : Int = R.color.colorAccent
+        set(color) {
+            field = color
+            notifyDataSetChanged()
+        }
 
     override fun notifyDataSetChanged() {
         super.notifyDataSetChanged()
