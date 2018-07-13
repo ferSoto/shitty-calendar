@@ -52,6 +52,7 @@ class CalendarAdapter(
     override fun getCount() = dateList.size
 
     fun setSelectedDate(date: Date, daysOfMonth: ArrayList<Date>) {
+        if (selectedDate.isSameDay(date)) return
         selectedDate = date
         updateMonth(daysOfMonth)
     }

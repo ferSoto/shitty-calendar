@@ -174,6 +174,7 @@ class CustomCalendarView : LinearLayout, CalendarAdapter.Listener {
     // CalendarAdapter.Listener
 
     override fun onSelectDate(date: Date) {
+        selectedDate = date
         listener?.onSelectDate(date)
     }
 
